@@ -1,0 +1,161 @@
+{
+  "info": {
+    "name": "RBPOLAB API",
+    "_postman_id": "8c4cb38e-41f2-4c74-aa66-e03b4b17e5cf",
+    "description": "CRUD requests for Recipe Book entities.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"chef1\"\n}"
+            },
+            "url": "{{baseUrl}}/api/users"
+          }
+        },
+        {
+          "name": "Get Users",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ingredients",
+      "item": [
+        {
+          "name": "Create Ingredient",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tomato\"\n}"
+            },
+            "url": "{{baseUrl}}/api/ingredients"
+          }
+        },
+        {
+          "name": "Get Ingredients",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/ingredients"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recipes",
+      "item": [
+        {
+          "name": "Create Recipe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Salad\",\n  \"description\": \"Simple salad\",\n  \"authorId\": 1,\n  \"ingredientIds\": [1]\n}"
+            },
+            "url": "{{baseUrl}}/api/recipes"
+          }
+        },
+        {
+          "name": "Get Recipes",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/recipes"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ratings",
+      "item": [
+        {
+          "name": "Create Rating",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": 5,\n  \"recipeId\": 1,\n  \"userId\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/ratings"
+          }
+        },
+        {
+          "name": "Get Ratings",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/ratings"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Comments",
+      "item": [
+        {
+          "name": "Create Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Very tasty\",\n  \"recipeId\": 1,\n  \"userId\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/comments"
+          }
+        },
+        {
+          "name": "Get Comments",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/comments"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ]
+}
