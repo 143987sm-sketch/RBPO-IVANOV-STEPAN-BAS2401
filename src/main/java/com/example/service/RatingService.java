@@ -47,6 +47,27 @@ public class RatingService {
     }
 
     @Transactional
+    public Rating setForRecipeAndUser(Integer value, Recipe recipe, User user) {
+        List<Rating> existing = em.createQuery(
+                        "select r from Rating r where r.recipe.id = :recipeId and r.user.id = :userId",
+                        Rating.class
+                )
+                .setParameter("recipeId", recipe.getId())
+                .setParameter("userId", user.getId())
+                .setMaxResults(1)
+                .getResultList();
+
+        if (existing.isEmpty()) {
+            return create(value, recipe, user);
+        }
+        Rating rating = existing.getFirst();
+        rating.setValue(value);
+        rating.setRecipe(recipe);
+        rating.setUser(user);
+        return rating;
+    }
+
+    @Transactional
     public Rating update(Long id, Integer value, Recipe recipe, User user) {
         Rating existing = em.find(Rating.class, id);
         if (existing == null) {

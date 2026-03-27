@@ -32,6 +32,37 @@
             "method": "GET",
             "url": "{{baseUrl}}/api/users"
           }
+        },
+        {
+          "name": "Get User By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users/1"
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"chef1_updated\"\n}"
+            },
+            "url": "{{baseUrl}}/api/users/1"
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/users/1"
+          }
         }
       ]
     },
@@ -60,6 +91,37 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/ingredients"
+          }
+        },
+        {
+          "name": "Get Ingredient By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/ingredients/1"
+          }
+        },
+        {
+          "name": "Update Ingredient",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tomato Updated\"\n}"
+            },
+            "url": "{{baseUrl}}/api/ingredients/1"
+          }
+        },
+        {
+          "name": "Delete Ingredient",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/ingredients/1"
           }
         }
       ]
@@ -90,6 +152,37 @@
             "method": "GET",
             "url": "{{baseUrl}}/api/recipes"
           }
+        },
+        {
+          "name": "Get Recipe By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/recipes/1"
+          }
+        },
+        {
+          "name": "Update Recipe",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Salad Updated\",\n  \"description\": \"Simple salad (updated)\",\n  \"authorId\": 1,\n  \"ingredientIds\": [1]\n}"
+            },
+            "url": "{{baseUrl}}/api/recipes/1"
+          }
+        },
+        {
+          "name": "Delete Recipe",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/recipes/1"
+          }
         }
       ]
     },
@@ -119,6 +212,37 @@
             "method": "GET",
             "url": "{{baseUrl}}/api/ratings"
           }
+        },
+        {
+          "name": "Get Rating By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/ratings/1"
+          }
+        },
+        {
+          "name": "Update Rating",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": 4,\n  \"recipeId\": 1,\n  \"userId\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/ratings/1"
+          }
+        },
+        {
+          "name": "Delete Rating",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/ratings/1"
+          }
         }
       ]
     },
@@ -147,6 +271,107 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/comments"
+          }
+        },
+        {
+          "name": "Get Comment By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/comments/1"
+          }
+        },
+        {
+          "name": "Update Comment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Very tasty (updated)\",\n  \"recipeId\": 1,\n  \"userId\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/comments/1"
+          }
+        },
+        {
+          "name": "Delete Comment",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/comments/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Business operations",
+      "item": [
+        {
+          "name": "Publish Recipe (ingredient names)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Pasta\",\n  \"description\": \"Quick pasta\",\n  \"authorId\": 1,\n  \"ingredientNames\": [\"Tomato\", \"Salt\"]\n}"
+            },
+            "url": "{{baseUrl}}/api/recipes/publish"
+          }
+        },
+        {
+          "name": "Add Ingredient To Recipe (by name)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cheese\"\n}"
+            },
+            "url": "{{baseUrl}}/api/recipes/1/ingredients"
+          }
+        },
+        {
+          "name": "Recipe Details (stats)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/recipes/1/details"
+          }
+        },
+        {
+          "name": "Top Recipes",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/recipes/top?limit=5"
+          }
+        },
+        {
+          "name": "Set Rating (create or update)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": 5,\n  \"recipeId\": 1,\n  \"userId\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/ratings/set"
           }
         }
       ]

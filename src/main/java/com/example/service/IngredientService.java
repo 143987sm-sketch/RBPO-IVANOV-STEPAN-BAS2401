@@ -38,6 +38,26 @@ public class IngredientService {
     }
 
     @Transactional
+    public Ingredient getOrCreateByName(String rawName) {
+        String name = normalizeName(rawName);
+        if (name.isBlank()) {
+            throw new IllegalArgumentException("ingredient name is blank");
+        }
+        List<Ingredient> found = em.createQuery("select i from Ingredient i where i.name = :name", Ingredient.class)
+                .setParameter("name", name)
+                .setMaxResults(1)
+                .getResultList();
+        if (!found.isEmpty()) {
+            return found.getFirst();
+        }
+
+        Ingredient ingredient = new Ingredient();
+        ingredient.setName(name);
+        em.persist(ingredient);
+        return ingredient;
+    }
+
+    @Transactional
     public Ingredient update(Long id, String name) {
         Ingredient existing = em.find(Ingredient.class, id);
         if (existing == null) {
@@ -55,5 +75,12 @@ public class IngredientService {
         }
         em.remove(existing);
         return true;
+    }
+
+    private String normalizeName(String raw) {
+        if (raw == null) {
+            return "";
+        }
+        return raw.trim().replaceAll("\\s+", " ");
     }
 }

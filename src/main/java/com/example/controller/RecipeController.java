@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -81,6 +82,68 @@ public class RecipeController {
         }
     }
 
+    // Business operation #1: publish recipe by ingredient names (creates missing ingredients)
+    @PostMapping("/publish")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Recipe publish(@RequestBody PublishRecipeRequest body) {
+        if (body.title() == null || body.title().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "title is required");
+        }
+        User author = userService.getById(body.authorId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "author not found"));
+
+        List<Ingredient> ingredients = new ArrayList<>();
+        if (body.ingredientNames() != null) {
+            for (String name : body.ingredientNames()) {
+                try {
+                    ingredients.add(ingredientService.getOrCreateByName(name));
+                } catch (IllegalArgumentException e) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+                }
+            }
+        }
+
+        return recipeService.create(body.title(), body.description(), author, ingredients);
+    }
+
+    // Business operation #2: add ingredient to recipe by name (creates ingredient if needed)
+    @PostMapping("/{id}/ingredients")
+    public Recipe addIngredient(@PathVariable Long id, @RequestBody AddIngredientRequest body) {
+        if (body.name() == null || body.name().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "name is required");
+        }
+        Ingredient ingredient;
+        try {
+            ingredient = ingredientService.getOrCreateByName(body.name());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+        Recipe updated = recipeService.addIngredient(id, ingredient);
+        if (updated == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "recipe not found");
+        }
+        return updated;
+    }
+
+    // Business operation #3: recipe details + rating & comment stats
+    @GetMapping("/{id}/details")
+    public RecipeService.RecipeDetails details(@PathVariable Long id) {
+        RecipeService.RecipeDetails details = recipeService.getDetails(id);
+        if (details == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "recipe not found");
+        }
+        return details;
+    }
+
+    // Business operation #4: top recipes by rating
+    @GetMapping("/top")
+    public List<RecipeService.RecipeSummary> top(@RequestParam(defaultValue = "5") int limit) {
+        if (limit < 1 || limit > 50) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "limit must be in range 1..50");
+        }
+        return recipeService.getTop(limit);
+    }
+
     private Recipe applyAndCreate(RecipeRequest body) {
         if (body.title() == null || body.title().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "title is required");
@@ -105,5 +168,11 @@ public class RecipeController {
     }
 
     public record RecipeRequest(String title, String description, Long authorId, List<Long> ingredientIds) {
+    }
+
+    public record PublishRecipeRequest(String title, String description, Long authorId, List<String> ingredientNames) {
+    }
+
+    public record AddIngredientRequest(String name) {
     }
 }

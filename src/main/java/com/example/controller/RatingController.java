@@ -54,6 +54,19 @@ public class RatingController {
         return ratingService.create(body.value(), recipe, user);
     }
 
+    // Business operation #5: set (create or update) rating by recipe/user
+    @PostMapping("/set")
+    public Rating set(@RequestBody RatingRequest body) {
+        if (body.value() == null || body.value() < 1 || body.value() > 5) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "value must be in range 1..5");
+        }
+        Recipe recipe = recipeService.getById(body.recipeId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "recipe not found"));
+        User user = userService.getById(body.userId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
+        return ratingService.setForRecipeAndUser(body.value(), recipe, user);
+    }
+
     @GetMapping
     public List<Rating> getAll() {
         return ratingService.getAll();
