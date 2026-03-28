@@ -36,7 +36,17 @@ public class RecipeService {
     }
 
     public Optional<Recipe> getById(Long id) {
-        return Optional.ofNullable(em.find(Recipe.class, id));
+        List<Recipe> list = em.createQuery(
+                        "select distinct r from Recipe r "
+                                + "left join fetch r.author "
+                                + "left join fetch r.ingredients "
+                                + "where r.id = :id",
+                        Recipe.class
+                )
+                .setParameter("id", id)
+                .setMaxResults(1)
+                .getResultList();
+        return list.isEmpty() ? Optional.empty() : Optional.of(list.getFirst());
     }
 
     @Transactional
@@ -76,6 +86,7 @@ public class RecipeService {
         return true;
     }
 
+    @Transactional
     public RecipeDetails getDetails(Long recipeId) {
         Recipe recipe = em.find(Recipe.class, recipeId);
         if (recipe == null) {

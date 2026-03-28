@@ -1,6 +1,7 @@
 package com.example.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,7 +33,14 @@ public class Recipe {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id", nullable = false)
+    @JsonIgnore
     private User author;
+
+    @Transient
+    @JsonProperty
+    public Long getAuthorId() {
+        return author == null ? null : author.getId();
+    }
 
     @ManyToMany
     @JoinTable(
@@ -51,6 +59,7 @@ public class Recipe {
     private List<Comment> comments = new ArrayList<>();
 
     @Transient
+    @JsonIgnore
     public double getAverageRating() {
         if (ratings == null || ratings.isEmpty()) {
             return 0.0;
@@ -85,6 +94,7 @@ public class Recipe {
         this.description = description;
     }
 
+    @JsonIgnore
     public User getAuthor() {
         return author;
     }
@@ -101,6 +111,7 @@ public class Recipe {
         this.ingredients = ingredients;
     }
 
+    @JsonIgnore
     public List<Rating> getRatings() {
         return ratings;
     }
@@ -109,6 +120,7 @@ public class Recipe {
         this.ratings = ratings;
     }
 
+    @JsonIgnore
     public List<Comment> getComments() {
         return comments;
     }

@@ -28,11 +28,27 @@ public class RatingService {
     }
 
     public List<Rating> getAll() {
-        return em.createQuery("select r from Rating r", Rating.class).getResultList();
+        return em.createQuery(
+                        "select distinct r from Rating r "
+                                + "join fetch r.recipe "
+                                + "join fetch r.user",
+                        Rating.class
+                )
+                .getResultList();
     }
 
     public Optional<Rating> getById(Long id) {
-        return Optional.ofNullable(em.find(Rating.class, id));
+        List<Rating> list = em.createQuery(
+                        "select distinct r from Rating r "
+                                + "join fetch r.recipe "
+                                + "join fetch r.user "
+                                + "where r.id = :id",
+                        Rating.class
+                )
+                .setParameter("id", id)
+                .setMaxResults(1)
+                .getResultList();
+        return list.isEmpty() ? Optional.empty() : Optional.of(list.getFirst());
     }
 
     public boolean existsForRecipeAndUser(Long recipeId, Long userId) {
