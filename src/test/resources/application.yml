@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: "24001234567"
+
+application:
+  project-title: "Редакция новостного издания (test)"
+  variant: 27
+  locale: ru-RU

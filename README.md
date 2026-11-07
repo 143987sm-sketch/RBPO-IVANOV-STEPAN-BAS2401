@@ -1,29 +1,35 @@
-## Тема
-Книга рецептов (Recipe Book).
+## RBPO 2026 — задания 1–2, вариант 27
 
-## Основные сущности
-- `User` — пользователь
-- `Recipe` — рецепт
-- `Ingredient` — ингредиент (уникален по названию)
-- `Rating` — оценка рецепта (1..5), уникальна для пары (recipe, user)
-- `Comment` — комментарий к рецепту
+Тема: **Редакция новостного издания**.
 
-## Возможности сервиса
-### CRUD (по каждой сущности)
-- `POST/GET/PUT/DELETE`
-  - `/api/users`
-  - `/api/ingredients`
-  - `/api/recipes`
-  - `/api/ratings`
-  - `/api/comments`
+### Запуск
 
-### Бизнес-операции (Задание 3)
-- `POST /api/recipes/publish` — публикация рецепта по списку названий ингредиентов (создаёт отсутствующие ингредиенты).
-- `POST /api/recipes/{id}/ingredients` — добавить ингредиент к рецепту по названию (создаёт, если отсутствует).
-- `GET /api/recipes/{id}/details` — детали рецепта + статистика (средняя оценка, кол-во оценок, кол-во комментариев).
-- `GET /api/recipes/top?limit=N` — топ рецептов по рейтингу.
-- `POST /api/ratings/set` — установить оценку рецепту (create или update) для пары (recipe, user).
+```bash
+cd RBPOLAB
+mvn clean test
+mvn spring-boot:run
+```
 
-## Postman
-Коллекция запросов:
-- `postman/RBPOLAB.postman_collection.json`
+Сервис: `http://localhost:8080`
+
+### Задание 1
+
+- Spring Boot 3.5.5, Maven, JDK 21
+- `application.yml` в `src/main/resources` и `src/test/resources` (`spring.application.name` — номер студенческого билета, замените `24001234567` на свой)
+- GET `/api/info/greeting` → `привет это первое задание`
+- GET `/api/info/numbers` → JSON-массив из 3 случайных целых (1–99)
+- Testcontainers (test scope, без Docker в тестах)
+
+### Задание 2 (вариант 27)
+
+| Ресурс | Путь |
+|--------|------|
+| Пользователь | `/api/users` |
+| Рубрика | `/api/editorial-sections` |
+| Статья | `/api/articles` |
+| Редакторская проверка | `/api/editorial-reviews` |
+| Выпуск издания | `/api/edition-issues` |
+
+CRUD: GET list/id, POST (201), PATCH (200), DELETE (204). Любой PUT возвращает статический HTML.
+
+Хранилище — in-memory (задание 3 добавит БД).

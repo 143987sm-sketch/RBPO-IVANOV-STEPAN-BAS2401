@@ -1,59 +1,67 @@
 package com.example.service;
 
+import com.example.annotation.Cumponent;
+import com.example.facade.UserFacade;
+import com.example.factory.UserFactory;
+import com.example.model.Article;
 import com.example.model.User;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
+import com.example.repository.ArticleRepository;
+import com.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Cumponent
 @Service
 public class UserService {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final UserRepository userRepository;
+    private final UserFactory userFactory;
+    private final ArticleRepository articleRepository;
+    private final ArticleService articleService;
 
-    @Transactional
-    public User create(User user) {
-        user.setId(null);
-        em.persist(user);
-        return user;
+    public UserService(
+            UserRepository userRepository,
+            UserFactory userFactory,
+            ArticleRepository articleRepository,
+            ArticleService articleService
+    ) {
+        this.userRepository = userRepository;
+        this.userFactory = userFactory;
+        this.articleRepository = articleRepository;
+        this.articleService = articleService;
     }
 
-    public List<User> getAll() {
-        return em.createQuery("select u from User u", User.class).getResultList();
+    public User create(UserFacade facade) {
+        User draft = userFactory.create(0L, facade);
+        return userRepository.insert(draft);
     }
 
-    public Optional<User> getById(Long id) {
-        return Optional.ofNullable(em.find(User.class, id));
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 
-    public boolean existsByUsername(String username) {
-        Long count = em.createQuery("select count(u) from User u where u.username = :username", Long.class)
-                .setParameter("username", username)
-                .getSingleResult();
-        return count != null && count > 0;
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
     }
 
-    @Transactional
-    public User update(Long id, String username) {
-        User existing = em.find(User.class, id);
-        if (existing == null) {
-            return null;
-        }
-        existing.setUsername(username);
-        return existing;
+    public Optional<User> update(Long id, UserFacade facade) {
+        return userRepository.findById(id).map(user -> {
+            user.setUsername(facade.username());
+            user.setDisplayName(facade.displayName());
+            return user;
+        });
     }
 
-    @Transactional
     public boolean delete(Long id) {
-        User existing = em.find(User.class, id);
-        if (existing == null) {
+        if (!userRepository.existsById(id)) {
             return false;
         }
-        em.remove(existing);
-        return true;
+        List<Article> articles = articleRepository.findByAuthorId(id);
+        for (Article article : articles) {
+            articleService.delete(article.getId());
+        }
+        return userRepository.deleteById(id);
     }
 }

@@ -1,77 +1,39 @@
 package com.example.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+public final class User {
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Entity
-@Table(name = "users")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, unique = true)
     private String username;
+    private String displayName;
 
-    @OneToMany(mappedBy = "author")
-    @JsonIgnore
-    private List<Recipe> recipes = new ArrayList<>();
+    private User() {
+    }
 
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<Rating> ratings = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<Comment> comments = new ArrayList<>();
+    public static User newInstance(Long id, String username, String displayName) {
+        User user = new User();
+        user.id = id;
+        user.username = username;
+        user.displayName = displayName;
+        return user;
+    }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUsername() {
         return username;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
 
-    public List<Recipe> getRecipes() {
-        return recipes;
-    }
-
-    public void setRecipes(List<Recipe> recipes) {
-        this.recipes = recipes;
-    }
-
-    public List<Rating> getRatings() {
-        return ratings;
-    }
-
-    public void setRatings(List<Rating> ratings) {
-        this.ratings = ratings;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 }
